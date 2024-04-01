@@ -13,6 +13,7 @@ const gData = [...Array(N).keys()].map(() => ({
 
 const colorInterpolator = (t: number): string =>
   `rgba(255,100,50,${Math.sqrt(1 - t)})`;
+
 const World = () => {
   const globeEl = useRef<any | null>(null);
 
@@ -25,15 +26,20 @@ const World = () => {
   }, []);
 
   return (
-    <Globe
-      ref={globeEl}
-      globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
-      ringsData={gData}
-      ringColor={() => colorInterpolator}
-      ringMaxRadius="maxR"
-      ringPropagationSpeed="propagationSpeed"
-      ringRepeatPeriod="repeatPeriod"
-    />
+    <div className="relative">
+      <Globe
+        ref={globeEl}
+        globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
+        ringsData={gData}
+        ringColor={() => colorInterpolator}
+        ringMaxRadius="maxR"
+        ringPropagationSpeed="propagationSpeed"
+        ringRepeatPeriod="repeatPeriod"
+      />
+      <div className="absolute top-0 right-0 w-64 h-screen border-4 bg-opacity-50">
+        {/* Content of the right-hand side window goes here */}
+      </div>
+    </div>
   );
 };
 
