@@ -1,8 +1,5 @@
-import React, { useState, useEffect, FC } from "react";
-import dynamic from "next/dynamic";
-
-// Dynamically import the Globe component with SSR turned off
-const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
+import React, { useState, useEffect, FC, useRef } from "react";
+import Globe from "react-globe.gl";
 
 interface GeoLocation {
   lat: number;
@@ -16,11 +13,21 @@ interface PointData extends GeoLocation {
 }
 
 const MyGlobe: FC = () => {
+  // State and refs
   const [dimensions, setDimensions] = useState<{
     width: number;
     height: number;
   }>({ width: 0, height: 0 });
   const [color, setColor] = useState<string>("red");
+  const globeEl = useRef<any | null>(null);
+
+  // Effects
+  useEffect(() => {
+    if (globeEl.current) {
+      globeEl.current.controls().autoRotate = true;
+      globeEl.current.controls().autoRotateSpeed = 1.5; // Adjust the speed as needed
+    }
+  }, []);
 
   useEffect(() => {
     setDimensions({
@@ -29,14 +36,13 @@ const MyGlobe: FC = () => {
     });
   }, []);
 
-  // Define your geolocations here
+  // Data
   const geolocations: GeoLocation[] = [
     { lat: 51.5074, lng: 0.1278 }, // London
     { lat: 40.7128, lng: -74.006 }, // New York
     // Add more geolocations as needed
   ];
 
-  // Convert geolocations to pointsData
   const pointsData: PointData[] = geolocations.map((location) => ({
     lat: location.lat,
     lng: location.lng,
@@ -45,15 +51,16 @@ const MyGlobe: FC = () => {
     radius: 0.5,
   }));
 
+  // Handlers
   const handleClick = () => {
-    console.log("Clicked!");
-    // Change color on click
     setColor(color === "red" ? "blue" : "red");
   };
 
+  // Render
   return (
     <div onClick={handleClick}>
       <Globe
+        ref={globeEl}
         globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
         backgroundColor="rgba(0,0,0,1)" // Set to black
         width={dimensions.width}
