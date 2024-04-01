@@ -1,46 +1,27 @@
-import React, { useEffect, useRef } from "react";
-import mapboxgl, { Projection } from "mapbox-gl";
+import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 
-mapboxgl.accessToken =
-  "pk.eyJ1IjoidGJ1aTE5OTUiLCJhIjoiY2x1Z3llbGhtMmtrajJtbGRzd3ZjbXhpeiJ9.PydtIujr8rhy0cBttOI-IQ";
+// Dynamically import the Globe component with SSR turned off
+const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
 
-const Globe: React.FC = () => {
-  const mapContainerRef = useRef(null);
+const MyGlobe = () => {
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
-    if (mapContainerRef.current) {
-      const map = new mapboxgl.Map({
-        container: mapContainerRef.current,
-        style: "mapbox://styles/mapbox/dark-v10", // Changed to dark-v10 for a night theme
-        center: [0, 0],
-        zoom: 1,
-        pitch: 60, // pitch in degrees
-        bearing: -60, // bearing in degrees
-        projection: "globe" as unknown as Projection, // Fixed the type error by casting the value to Projection type
-      });
-
-      const nav = new mapboxgl.NavigationControl();
-      map.addControl(nav, "top-right");
-
-      map.on("load", () => {
-        const mapStyle = map.getStyle();
-        if (mapStyle) {
-          mapStyle.light = {
-            anchor: "viewport",
-            color: "#ffffff",
-            intensity: 0.1,
-          };
-          map.setStyle(mapStyle);
-        }
-      });
-
-      return () => map.remove();
-    }
+    setDimensions({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
   }, []);
 
   return (
-    <div ref={mapContainerRef} style={{ width: "100%", height: "100vh" }} />
+    <Globe
+      globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
+      backgroundColor="rgba(0,0,0,0)" // Set to transparent or any desired background color
+      width={dimensions.width}
+      height={dimensions.height}
+    />
   );
 };
 
-export default Globe;
+export default MyGlobe;
