@@ -17,7 +17,7 @@ const MyGlobe = () => {
   return (
     <Globe
       globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
-      backgroundColor="rgba(0,0,0,0)" // Set to transparent or any desired background color
+      backgroundColor="rgba(0,0,0,1)" // Set to black
       width={dimensions.width}
       height={dimensions.height}
     />
