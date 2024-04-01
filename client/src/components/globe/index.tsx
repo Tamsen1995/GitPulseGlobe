@@ -1,24 +1,19 @@
-import React, { useState, useEffect, FC, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Globe from "react-globe.gl";
 
-interface GeoLocation {
-  lat: number;
-  lng: number;
-}
+// Gen random data
+const N = 10;
+const gData = [...Array(N).keys()].map(() => ({
+  lat: (Math.random() - 0.5) * 180,
+  lng: (Math.random() - 0.5) * 360,
+  maxR: Math.random() * 20 + 3,
+  propagationSpeed: (Math.random() - 0.5) * 20 + 1,
+  repeatPeriod: Math.random() * 2000 + 200,
+}));
 
-interface PointData extends GeoLocation {
-  color: string;
-  altitude: number;
-  radius: number;
-}
-
-const MyGlobe: FC = () => {
-  // State and refs
-  const [dimensions, setDimensions] = useState<{
-    width: number;
-    height: number;
-  }>({ width: 0, height: 0 });
-  const [color, setColor] = useState<string>("red");
+const colorInterpolator = (t: number): string =>
+  `rgba(255,100,50,${Math.sqrt(1 - t)})`;
+const World = () => {
   const globeEl = useRef<any | null>(null);
 
   // Effects
@@ -29,49 +24,17 @@ const MyGlobe: FC = () => {
     }
   }, []);
 
-  useEffect(() => {
-    setDimensions({
-      width: window.innerWidth,
-      height: window.innerHeight,
-    });
-  }, []);
-
-  // Data
-  const geolocations: GeoLocation[] = [
-    { lat: 51.5074, lng: 0.1278 }, // London
-    { lat: 40.7128, lng: -74.006 }, // New York
-    // Add more geolocations as needed
-  ];
-
-  const pointsData: PointData[] = geolocations.map((location) => ({
-    lat: location.lat,
-    lng: location.lng,
-    color: color,
-    altitude: 0.1,
-    radius: 0.5,
-  }));
-
-  // Handlers
-  const handleClick = () => {
-    setColor(color === "red" ? "blue" : "red");
-  };
-
-  // Render
   return (
-    <div onClick={handleClick}>
-      <Globe
-        ref={globeEl}
-        globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
-        backgroundColor="rgba(0,0,0,1)" // Set to black
-        width={dimensions.width}
-        height={dimensions.height}
-        pointsData={pointsData}
-        pointAltitude="altitude"
-        pointColor="color"
-        pointRadius="radius"
-      />
-    </div>
+    <Globe
+      ref={globeEl}
+      globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
+      ringsData={gData}
+      ringColor={() => colorInterpolator}
+      ringMaxRadius="maxR"
+      ringPropagationSpeed="propagationSpeed"
+      ringRepeatPeriod="repeatPeriod"
+    />
   );
 };
 
-export default MyGlobe;
+export default World;
