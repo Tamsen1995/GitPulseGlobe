@@ -62,7 +62,7 @@ const MyGlobe: FC = () => {
       <Globe
         ref={globeEl}
         globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
-        backgroundColor="rgba(19, 18, 41, 1)"
+        backgroundColor="rgba(9, 8, 23, 1)"
         width={dimensions.width}
         height={dimensions.height}
         pointsData={pointsData}
