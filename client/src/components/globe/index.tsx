@@ -1,12 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import dynamic from "next/dynamic";
 
 // Dynamically import the Globe component with SSR turned off
 const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
 
-const MyGlobe = () => {
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  const [color, setColor] = useState("red");
+interface GeoLocation {
+  lat: number;
+  lng: number;
+}
+
+interface PointData extends GeoLocation {
+  color: string;
+  altitude: number;
+  radius: number;
+}
+
+const MyGlobe: FC = () => {
+  const [dimensions, setDimensions] = useState<{
+    width: number;
+    height: number;
+  }>({ width: 0, height: 0 });
+  const [color, setColor] = useState<string>("red");
 
   useEffect(() => {
     setDimensions({
@@ -16,14 +30,14 @@ const MyGlobe = () => {
   }, []);
 
   // Define your geolocations here
-  const geolocations = [
+  const geolocations: GeoLocation[] = [
     { lat: 51.5074, lng: 0.1278 }, // London
     { lat: 40.7128, lng: -74.006 }, // New York
     // Add more geolocations as needed
   ];
 
   // Convert geolocations to pointsData
-  const pointsData = geolocations.map((location, index) => ({
+  const pointsData: PointData[] = geolocations.map((location) => ({
     lat: location.lat,
     lng: location.lng,
     color: color,
